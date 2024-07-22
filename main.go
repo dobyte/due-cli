@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/dobyte/due/cmd/v2/create"
-	"github.com/dobyte/due/cmd/v2/install"
-	"github.com/dobyte/due/cmd/v2/internal/version"
+	"github.com/dobyte/due-cli/create"
+	"github.com/dobyte/due-cli/install"
+	"github.com/dobyte/due-cli/internal/version"
 	"github.com/urfave/cli/v2"
 	"os"
 )

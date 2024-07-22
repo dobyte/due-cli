@@ -1,4 +1,4 @@
-module github.com/dobyte/due/cmd/v2
+module github.com/dobyte/due-cli
 
 go 1.21
 

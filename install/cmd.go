@@ -1,11 +1,11 @@
 package install
 
 import (
-	"github.com/dobyte/due/cmd/v2/install/gorm"
-	"github.com/dobyte/due/cmd/v2/install/grpc"
-	"github.com/dobyte/due/cmd/v2/install/mongo"
-	"github.com/dobyte/due/cmd/v2/install/proto"
-	"github.com/dobyte/due/cmd/v2/install/rpcx"
+	"github.com/dobyte/due-cli/install/gorm"
+	"github.com/dobyte/due-cli/install/grpc"
+	"github.com/dobyte/due-cli/install/mongo"
+	"github.com/dobyte/due-cli/install/proto"
+	"github.com/dobyte/due-cli/install/rpcx"
 	"github.com/urfave/cli/v2"
 )
 

@@ -1,9 +1,9 @@
 package create
 
 import (
-	"github.com/dobyte/due/cmd/v2/create/gate"
-	"github.com/dobyte/due/cmd/v2/create/mesh"
-	"github.com/dobyte/due/cmd/v2/create/node"
+	"github.com/dobyte/due-cli/create/gate"
+	"github.com/dobyte/due-cli/create/mesh"
+	"github.com/dobyte/due-cli/create/node"
 	"github.com/urfave/cli/v2"
 )
 

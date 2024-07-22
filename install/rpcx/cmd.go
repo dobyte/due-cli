@@ -1,7 +1,7 @@
 package rpcx
 
 import (
-	"github.com/dobyte/due/cmd/v2/internal/exec"
+	"github.com/dobyte/due-cli/internal/exec"
 	"github.com/urfave/cli/v2"
 )
 

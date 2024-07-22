@@ -1,12 +1,12 @@
 package etc
 
 import (
-	"github.com/dobyte/due/cmd/v2/internal/etc/base"
-	"github.com/dobyte/due/cmd/v2/internal/etc/cluster"
-	"github.com/dobyte/due/cmd/v2/internal/etc/locator"
-	"github.com/dobyte/due/cmd/v2/internal/etc/network"
-	"github.com/dobyte/due/cmd/v2/internal/etc/registry"
-	"github.com/dobyte/due/cmd/v2/internal/etc/transporter"
+	"github.com/dobyte/due-cli/internal/etc/base"
+	"github.com/dobyte/due-cli/internal/etc/cluster"
+	"github.com/dobyte/due-cli/internal/etc/locator"
+	"github.com/dobyte/due-cli/internal/etc/network"
+	"github.com/dobyte/due-cli/internal/etc/registry"
+	"github.com/dobyte/due-cli/internal/etc/transporter"
 	"strings"
 )
 

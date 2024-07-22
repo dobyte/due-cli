@@ -1,12 +1,12 @@
 package mesh
 
 import (
-	"github.com/dobyte/due/cmd/v2/create/mesh/template"
-	"github.com/dobyte/due/cmd/v2/internal/etc"
-	"github.com/dobyte/due/cmd/v2/internal/etc/cluster"
-	"github.com/dobyte/due/cmd/v2/internal/flag"
-	"github.com/dobyte/due/cmd/v2/internal/gen"
-	"github.com/dobyte/due/cmd/v2/internal/version"
+	"github.com/dobyte/due-cli/create/mesh/template"
+	"github.com/dobyte/due-cli/internal/etc"
+	"github.com/dobyte/due-cli/internal/etc/cluster"
+	"github.com/dobyte/due-cli/internal/flag"
+	"github.com/dobyte/due-cli/internal/gen"
+	"github.com/dobyte/due-cli/internal/version"
 	"github.com/urfave/cli/v2"
 )
 
