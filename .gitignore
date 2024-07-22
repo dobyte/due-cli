@@ -1,0 +1,6 @@
+# go work
+go.work
+go.work.sum
+
+# goland idea
+.idea/
