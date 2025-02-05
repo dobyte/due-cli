@@ -7,7 +7,7 @@ import (
 
 var Command = &cli.Command{
 	Name:  "gorm",
-	Usage: "Install the mongo toolchain",
+	Usage: "install the gorm toolchain",
 	Action: func(ctx *cli.Context) error {
 		exec.Install(exec.Package{
 			Name:    "gorm-dao-generator",

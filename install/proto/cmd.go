@@ -7,11 +7,11 @@ import (
 
 var Command = &cli.Command{
 	Name:  "proto",
-	Usage: "Install the protobuf toolchain",
+	Usage: "install the protobuf toolchain",
 	Action: func(ctx *cli.Context) error {
 		exec.Install(exec.Package{
-			Name:    "protoc-gen-gofast",
-			Module:  "github.com/gogo/protobuf/protoc-gen-gofast",
+			Name:    "protoc-gen-go",
+			Module:  "google.golang.org/protobuf/cmd/protoc-gen-go",
 			Version: "latest",
 		})
 

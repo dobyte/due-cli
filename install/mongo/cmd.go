@@ -7,7 +7,7 @@ import (
 
 var Command = &cli.Command{
 	Name:  "mongo",
-	Usage: "Install the mongo toolchain",
+	Usage: "install the mongo toolchain",
 	Action: func(ctx *cli.Context) error {
 		exec.Install(exec.Package{
 			Name:    "mongo-dao-generator",

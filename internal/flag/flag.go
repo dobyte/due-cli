@@ -4,9 +4,13 @@ import "github.com/urfave/cli/v2"
 
 var (
 	Name = &cli.StringFlag{
-		Name:     "name",
-		Usage:    "specify the project name",
-		Required: true,
+		Name:  "name",
+		Usage: "specify the project name",
+	}
+
+	Module = &cli.StringFlag{
+		Name:  "module",
+		Usage: "specify the project module",
 	}
 
 	Dir = &cli.StringFlag{
@@ -46,9 +50,9 @@ var (
 
 	Transporter = &cli.StringFlag{
 		Name:        "transporter",
-		Usage:       "specify the project transporter; optional: rpcx, grpc",
-		Value:       "rpcx",
-		DefaultText: "rpcx",
+		Usage:       "specify the project transporter; optional: grpc, rpcx",
+		Value:       "grpc",
+		DefaultText: "grpc",
 	}
 )
 

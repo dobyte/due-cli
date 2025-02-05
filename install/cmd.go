@@ -11,8 +11,8 @@ import (
 
 var Command = &cli.Command{
 	Name:        "install",
-	Usage:       "Install and update the toolchain",
-	Description: "Install and update the toolchain",
+	Usage:       "install and update the toolchain",
+	Description: "install and update the toolchain",
 	Subcommands: []*cli.Command{
 		grpc.Command,
 		rpcx.Command,

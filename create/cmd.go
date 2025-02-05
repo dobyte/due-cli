@@ -9,8 +9,8 @@ import (
 
 var Command = &cli.Command{
 	Name:        "create",
-	Usage:       "Create a new project",
-	Description: "Create a new project",
+	Usage:       "create a new cluster project",
+	Description: "create a new cluster project",
 	Subcommands: []*cli.Command{
 		gate.Command,
 		node.Command,

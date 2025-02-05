@@ -13,12 +13,11 @@ type Makefile struct {
 }
 
 type Generator struct {
-	name string // 项目名
-	dir  string // 根目录
+	dir string // 项目目录
 }
 
-func NewGenerator(name string, dir string) *Generator {
-	return &Generator{name: name, dir: filepath.Join(dir, name)}
+func NewGenerator(dir string) *Generator {
+	return &Generator{dir: dir}
 }
 
 // Make 生成文件
