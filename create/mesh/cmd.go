@@ -15,7 +15,6 @@ var Command = &cli.Command{
 	Name:  "mesh",
 	Usage: "create a new mesh project",
 	Flags: []cli.Flag{
-		flag.Name,
 		flag.Module,
 		flag.Dir,
 		flag.Codec,

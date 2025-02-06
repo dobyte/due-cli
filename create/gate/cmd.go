@@ -6,28 +6,28 @@ import (
 	"github.com/dobyte/due-cli/internal/etc/cluster"
 	"github.com/dobyte/due-cli/internal/flag"
 	"github.com/dobyte/due-cli/internal/gen"
+	"github.com/dobyte/due-cli/internal/os"
+	tpl "github.com/dobyte/due-cli/internal/template"
 	"github.com/dobyte/due-cli/internal/version"
 	"github.com/urfave/cli/v2"
-	"path"
 )
 
 var Command = &cli.Command{
 	Name:  "gate",
 	Usage: "create a new gate project",
 	Flags: []cli.Flag{
-		flag.Name,
-		flag.Module,
 		flag.Dir,
+		flag.Alone,
+		flag.Module,
 		flag.Network,
 		flag.Locator,
 		flag.Registry,
 	},
 	Action: func(ctx *cli.Context) error {
 		var (
-			output   string
-			name     = ctx.String("name")
-			module   = ctx.String("module")
 			dir      = ctx.String("dir")
+			alone    = ctx.Bool("alone")
+			module   = ctx.String("module")
 			network  = ctx.String("network")
 			locator  = ctx.String("locator")
 			registry = ctx.String("registry")
@@ -40,13 +40,14 @@ var Command = &cli.Command{
 			}
 		)
 
-		switch {
-		case len(module) != 0:
-			output = path.Join(dir, path.Base(module))
-		case len(name) != 0:
-			output = path.Join(dir, name)
-		default:
-			return cli.Exit("The module or name of the project is required.", 86)
+		if module == "" {
+			return cli.Exit("the module of the project is required.", 1)
+		}
+
+		if ok, err := os.IsEmptyDir(dir); err != nil {
+			return cli.Exit(err, 1)
+		} else if !ok {
+			return cli.Exit("the project dir is not empty.", 1)
 		}
 
 		etc := etc.NewEtc()
@@ -66,16 +67,28 @@ var Command = &cli.Command{
 			Out:      etc.Output(),
 			Tpl:      etc.Template(),
 			Replaces: replaces,
+		}, &gen.Makefile{
+			Out:      tpl.GitignoreOutput,
+			Tpl:      tpl.GitignoreTemplate,
+			Replaces: replaces,
 		})
 
-		if len(module) != 0 {
+		if alone {
 			makefiles = append(makefiles, &gen.Makefile{
-				Out:      template.GoModOutput,
-				Tpl:      template.GoModTemplate,
+				Out:      tpl.GoModOutput,
+				Tpl:      tpl.GoModTemplate,
 				Replaces: replaces,
 			})
+		} else {
+			if err := gen.MakeGlobalGoModFile(replaces); err != nil {
+				return cli.Exit(err, 1)
+			}
 		}
 
-		return gen.NewGenerator(output).Make(makefiles...)
+		if err := gen.NewGenerator(dir).Make(makefiles...); err != nil {
+			return cli.Exit(err, 1)
+		}
+
+		return nil
 	},
 }

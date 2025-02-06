@@ -15,7 +15,6 @@ var Command = &cli.Command{
 	Name:  "node",
 	Usage: "create a new node project",
 	Flags: []cli.Flag{
-		flag.Name,
 		flag.Module,
 		flag.Dir,
 		flag.Codec,

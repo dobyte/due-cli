@@ -3,21 +3,23 @@ package flag
 import "github.com/urfave/cli/v2"
 
 var (
-	Name = &cli.StringFlag{
-		Name:  "name",
-		Usage: "specify the project name",
-	}
-
-	Module = &cli.StringFlag{
-		Name:  "module",
-		Usage: "specify the project module",
-	}
-
 	Dir = &cli.StringFlag{
 		Name:        "dir",
 		Usage:       "specify the project directory",
 		Value:       "./",
 		DefaultText: "./",
+	}
+
+	Alone = &cli.BoolFlag{
+		Name:  "alone",
+		Usage: "specify whether the project uses alone module",
+		Value: false,
+	}
+
+	Module = &cli.StringFlag{
+		Name:     "module",
+		Usage:    "specify the project module",
+		Required: true,
 	}
 
 	Codec = &cli.StringFlag{
