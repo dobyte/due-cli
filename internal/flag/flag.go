@@ -10,10 +10,9 @@ var (
 		DefaultText: "./",
 	}
 
-	Alone = &cli.BoolFlag{
-		Name:  "alone",
-		Usage: "specify whether the project uses alone module",
-		Value: false,
+	Name = &cli.StringFlag{
+		Name:  "name",
+		Usage: "specify the project name",
 	}
 
 	Module = &cli.StringFlag{

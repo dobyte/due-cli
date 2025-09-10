@@ -80,7 +80,7 @@ var Command = &cli.Command{
 				Replaces: replaces,
 			})
 		} else {
-			if err := gen.MakeGlobalGoModFile(replaces); err != nil {
+			if err := gen.MakeGlobalFile(replaces); err != nil {
 				return cli.Exit(err, 1)
 			}
 		}

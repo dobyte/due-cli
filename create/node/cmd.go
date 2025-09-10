@@ -6,17 +6,18 @@ import (
 	"github.com/dobyte/due-cli/internal/etc/cluster"
 	"github.com/dobyte/due-cli/internal/flag"
 	"github.com/dobyte/due-cli/internal/gen"
+	"github.com/dobyte/due-cli/internal/os"
 	"github.com/dobyte/due-cli/internal/version"
 	"github.com/urfave/cli/v2"
-	"path"
 )
 
 var Command = &cli.Command{
 	Name:  "node",
 	Usage: "create a new node project",
 	Flags: []cli.Flag{
-		flag.Module,
 		flag.Dir,
+		flag.Name,
+		flag.Module,
 		flag.Codec,
 		flag.Locator,
 		flag.Registry,
@@ -24,15 +25,15 @@ var Command = &cli.Command{
 	},
 	Action: func(ctx *cli.Context) error {
 		var (
-			output      string
+			dir         = ctx.String("dir")
 			name        = ctx.String("name")
 			module      = ctx.String("module")
-			dir         = ctx.String("dir")
 			codec       = ctx.String("codec")
 			locator     = ctx.String("locator")
 			registry    = ctx.String("registry")
 			transporter = ctx.String("transporter")
 			replaces    = map[string]string{
+				"VarName":        name,
 				"VarModule":      module,
 				"VarCodec":       codec,
 				"VarLocator":     locator,
@@ -42,13 +43,14 @@ var Command = &cli.Command{
 			}
 		)
 
-		switch {
-		case len(module) != 0:
-			output = path.Join(dir, path.Base(module))
-		case len(name) != 0:
-			output = path.Join(dir, name)
-		default:
-			return cli.Exit("The module or name of the project is required.", 86)
+		if module == "" {
+			return cli.Exit("the module of the project is required.", 1)
+		}
+
+		if ok, err := os.IsEmptyDir(dir); err != nil {
+			return cli.Exit(err, 1)
+		} else if !ok {
+			return cli.Exit("the project dir is not empty.", 1)
 		}
 
 		etc := etc.NewEtc()
@@ -58,11 +60,10 @@ var Command = &cli.Command{
 		etc.AddCluster(cluster.Node)
 		etc.AddLocator(locator)
 		etc.AddRegistry(registry)
-		etc.AddTransportServer(transporter)
 		etc.AddTransportClient(transporter)
+		etc.AddTransportServer(transporter)
 
-		makefiles := make([]*gen.Makefile, 0, 3)
-		makefiles = append(makefiles, &gen.Makefile{
+		if err := gen.NewGenerator(dir).Make(&gen.Makefile{
 			Out:      template.MainOutput,
 			Tpl:      template.MainTemplate,
 			Replaces: replaces,
@@ -86,16 +87,14 @@ var Command = &cli.Command{
 			Out:      etc.Output(),
 			Tpl:      etc.Template(),
 			Replaces: replaces,
-		})
-
-		if len(module) != 0 {
-			makefiles = append(makefiles, &gen.Makefile{
-				Out:      template.GoModOutput,
-				Tpl:      template.GoModTemplate,
-				Replaces: replaces,
-			})
+		}); err != nil {
+			return cli.Exit(err, 1)
 		}
 
-		return gen.NewGenerator(output).Make(makefiles...)
+		if err := gen.MakeGlobalFile(replaces); err != nil {
+			return cli.Exit(err, 1)
+		}
+
+		return nil
 	},
 }

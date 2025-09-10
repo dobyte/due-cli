@@ -5,17 +5,27 @@ import (
 	tpl "github.com/dobyte/due-cli/internal/template"
 )
 
-// MakeGlobalGoModFile 生成全局的Go Mod 文件
-func MakeGlobalGoModFile(replaces map[string]string) error {
+// MakeGlobalFile 生成全局文件
+func MakeGlobalFile(replaces map[string]string) error {
 	dir := "./"
 
-	if os.IsFile(dir + tpl.GoModOutput) {
-		return nil
+	makefiles := make([]*Makefile, 0, 2)
+
+	if !os.IsFile(dir + tpl.GoModOutput) {
+		makefiles = append(makefiles, &Makefile{
+			Out:      tpl.GoModOutput,
+			Tpl:      tpl.GoModTemplate,
+			Replaces: replaces,
+		})
 	}
 
-	return NewGenerator(dir).Make(&Makefile{
-		Out:      tpl.GoModOutput,
-		Tpl:      tpl.GoModTemplate,
-		Replaces: replaces,
-	})
+	if !os.IsFile(dir + tpl.GitignoreOutput) {
+		makefiles = append(makefiles, &Makefile{
+			Out:      tpl.GitignoreOutput,
+			Tpl:      tpl.GitignoreTemplate,
+			Replaces: replaces,
+		})
+	}
+
+	return NewGenerator(dir).Make(makefiles...)
 }
