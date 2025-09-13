@@ -24,7 +24,7 @@ func Install(packages ...Package) {
 			if _, err := exec.Command("go", "install", fmt.Sprintf("%s@%s", p.Module, p.Version)).Output(); err != nil {
 				fmt.Printf("%s installed failed: %v\n", p.Name, strings.TrimSuffix(string(err.(*exec.ExitError).Stderr), "\n"))
 			} else {
-				fmt.Printf("%s installed successfully.\n", p.Name)
+				fmt.Printf("%s installed success\n", p.Name)
 			}
 
 			wg.Done()

@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/dobyte/due-cli/create"
 	"github.com/dobyte/due-cli/install"
 	"github.com/dobyte/due-cli/internal/version"
+	"github.com/dobyte/due-cli/upgrade"
 	"github.com/urfave/cli/v2"
-	"os"
 )
 
 func main() {
@@ -28,6 +30,7 @@ func main() {
 		Commands: []*cli.Command{
 			create.Command,
 			install.Command,
+			upgrade.Command,
 		},
 	}
 

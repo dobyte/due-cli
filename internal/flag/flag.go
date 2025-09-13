@@ -10,6 +10,13 @@ var (
 		DefaultText: "./",
 	}
 
+	Version = &cli.StringFlag{
+		Name:        "version",
+		Usage:       "specify the version of the due",
+		Value:       "latest",
+		DefaultText: "latest",
+	}
+
 	Name = &cli.StringFlag{
 		Name:  "name",
 		Usage: "specify the project name",

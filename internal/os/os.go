@@ -18,6 +18,11 @@ func IsFile(path string) bool {
 	return err == nil && !info.IsDir()
 }
 
+// ReadFile 读取文件
+func ReadFile(path string) ([]byte, error) {
+	return os.ReadFile(path)
+}
+
 // IsEmptyDir 检测是否是空目录
 func IsEmptyDir(path string) (bool, error) {
 	f, err := os.Open(path)

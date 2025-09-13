@@ -17,7 +17,7 @@ var Command = &cli.Command{
 	Usage: "create a new gate project",
 	Flags: []cli.Flag{
 		flag.Dir,
-		flag.Alone,
+		// flag.Alone,
 		flag.Module,
 		flag.Network,
 		flag.Locator,
