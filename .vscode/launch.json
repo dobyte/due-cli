@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Create a project",
+            "name": "Create gate project",
             "type": "go",
             "request": "launch",
             "mode": "auto",
@@ -13,19 +13,7 @@
             "cwd": "${workspaceFolder}/",
             "args": [
                 "create",
-                "mesh",
-                "--dir",
-                "${workspaceFolder}/mesh",
-                "--module",
-                "mesh",
-                "--codec",
-                "json",
-                "--locator",
-                "etcd",
-                "--registry",
-                "etcd",
-                "--transporter",
-                "tcp",
+                "gate"
             ],
         },
         {
