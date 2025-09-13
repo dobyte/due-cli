@@ -25,12 +25,12 @@ var Command = &cli.Command{
 	},
 	Action: func(ctx *cli.Context) error {
 		var (
-			dir      = ctx.String("dir")
-			alone    = ctx.Bool("alone")
-			module   = ctx.String("module")
-			network  = ctx.String("network")
-			locator  = ctx.String("locator")
-			registry = ctx.String("registry")
+			dir = ctx.String(flag.Dir.Name)
+			// alone    = ctx.Bool(flag.Alone.Name)
+			module   = ctx.String(flag.Module.Name)
+			network  = ctx.String(flag.Network.Name)
+			locator  = ctx.String(flag.Locator.Name)
+			registry = ctx.String(flag.Registry.Name)
 			replaces = map[string]string{
 				"VarModule":    module,
 				"VarNetwork":   network,

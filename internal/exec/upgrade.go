@@ -11,12 +11,18 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/dobyte/due-cli/internal/log"
 	"github.com/dobyte/due-cli/internal/os"
 )
 
 const (
 	dueFrameworkPrefix  = "github.com/dobyte/due"
 	dueFrameworkTagsUrl = "https://api.github.com/repos/dobyte/due/git/refs/tags"
+)
+
+const (
+	upgradeFailure = "upgrade failure"
+	upgradeSuccess = "upgrade success"
 )
 
 type tag struct {
@@ -28,25 +34,25 @@ type tag struct {
 }
 
 // Upgrade 升级框架
-func Upgrade(dir string, version string) error {
+func Upgrade(dir string, version string) {
 	if !os.IsDir(dir) {
-		return errors.New("the dir is not a directory")
+		log.Fatal(upgradeFailure, "the dir is not a directory")
 	}
 
 	mod := filepath.Join(dir, "go.mod")
 
 	if !os.IsFile(mod) {
-		return errors.New("the go.mod file does not exist")
+		log.Fatal(upgradeFailure, "the go.mod file does not exist")
 	}
 
 	content, err := os.ReadFile(mod)
 	if err != nil {
-		return err
+		log.Fatal(upgradeFailure, err)
 	}
 
 	major, full, sha, err := parseTag(version)
 	if err != nil {
-		return err
+		log.Fatal(upgradeFailure, err)
 	}
 
 	pkg := fmt.Sprintf("%s/%s@%s", dueFrameworkPrefix, major, full)
@@ -55,7 +61,7 @@ func Upgrade(dir string, version string) error {
 	cmd.WaitDelay = 30 * time.Second
 
 	if _, err = cmd.Output(); err != nil {
-		return err
+		log.Fatal(upgradeFailure, err)
 	}
 
 	reg := regexp.MustCompile(fmt.Sprintf(`(%s/\w+/\w+)/v\d+`, dueFrameworkPrefix))
@@ -72,11 +78,11 @@ func Upgrade(dir string, version string) error {
 		cmd.WaitDelay = 30 * time.Second
 
 		if _, err = cmd.Output(); err != nil {
-			return err
+			log.Fatal(upgradeFailure, err)
 		}
 	}
 
-	return nil
+	log.Info(upgradeSuccess)
 }
 
 // 解析标签

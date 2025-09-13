@@ -1,7 +1,6 @@
 package base
 
 const TaskTemplate = `
-# 任务池
 [task]
     # 任务池大小(goroutine)
     size = 100000

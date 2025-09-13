@@ -1,0 +1,13 @@
+package config
+
+const Consul = "consul"
+
+const ConsulTemplate = `
+[config.consul]
+	# 客户端连接地址
+	addr = "127.0.0.1:8500"
+	# 路径。默认为config
+	path = "config"
+	# 读写模式。可选：read-only | write-only | read-write，默认为read-only
+	mode = "read-only"
+`

@@ -29,6 +29,20 @@
             ],
         },
         {
+            "name": "Install rpcx toolchain",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/main.go",
+            "cwd": "${workspaceFolder}/",
+            "args": [
+                "install",
+                "rpcx",
+                "--version",
+                "latest",
+            ],
+        },
+        {
             "name": "Upgrade due version",
             "type": "go",
             "request": "launch",
@@ -40,7 +54,7 @@
                 "--dir",
                 "./testdata",
                 "--version",
-                "v2.3.3",
+                "latest",
             ],
         },
     ]

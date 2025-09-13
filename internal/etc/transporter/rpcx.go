@@ -4,9 +4,11 @@ const RPCX = "rpcx"
 
 const RPCXServerTemplate = `
 [transport.rpcx.server]
-	# 服务器监听地址，空或:0时系统将会随机端口号
+	# 服务器监听地址。空或:0时系统将会随机端口号
 	addr = ":0"
-	# 秘钥文件
+	# 是否将内部通信地址暴露到公网。默认为false
+	expose = false
+	# 私钥文件
 	keyFile = ""
 	# 证书文件
 	certFile = ""
@@ -14,8 +16,8 @@ const RPCXServerTemplate = `
 
 const RPCXClientTemplate = `
 [transport.rpcx.client]
-	# 证书文件
-	certFile = ""
+	# CA证书文件
+	caFile = ""
 	# 证书域名
 	serverName = ""
 	# 连接池大小，默认为10

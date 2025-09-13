@@ -2,26 +2,34 @@ package base
 
 const LogTemplate = `
 [log]
-    # 日志输出文件
-    file = "./log/due.log"
     # 日志输出级别，可选：debug | info | warn | error | fatal | panic
-    level = "info"
-    # 日志输出格式，可选：text | json
-    format = "text"
-    # 是否输出到终端
-    stdout = true
-    # 时间格式，标准库时间格式
-    timeFormat = "2006/01/02 15:04:05.000000"
+    level = "debug"
     # 堆栈的最低输出级别，可选：debug | info | warn | error | fatal | panic
     stackLevel = "error"
-    # 文件最大留存时间，d:天、h:时、m:分、s:秒
-    fileMaxAge = "7d"
-    # 文件最大尺寸限制，单位（MB）
-    fileMaxSize = 100
-    # 文件切割方式
-    fileCutRule = "day"
+    # 时间格式，标准库时间格式
+    timeFormat = "2006/01/02 15:04:05.000000"
+    # 输出栈的跳过深度
+    callSkip = 2
     # 是否启用调用文件全路径
-    callerFullPath = true
-    # 是否启用分级存储
-    classifiedStorage = true
+    callFullPath = true
+    # 日志输出终端
+    terminals = ["console", "file"]
+    # 控制台同步器配置
+    [log.console]
+        # 日志输出格式，可选：text | json
+        format = "text"
+    # 文件同步器配置
+    [log.file]
+        # 输出文件路径
+        path = "./log/due.log"
+        # 日志输出格式，可选：text | json
+        format = "text"
+        # 文件最大留存时间，d:天、h:时、m:分、s:秒
+        maxAge = "7d"
+        # 文件最大尺寸限制，支持单位： B | K | KB | M | MB | G | GB | T | TB | P | PB | E | EB | Z | ZB，默认为100M
+        maxSize = "100M"
+        # 文件翻转方式，可选：none | year | month | week | day | hour，默认为none
+        rotate = "none"
+        # 文件翻转时是否对文件进行压缩
+        compress = false
 `

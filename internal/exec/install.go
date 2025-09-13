@@ -3,8 +3,9 @@ package exec
 import (
 	"fmt"
 	"os/exec"
-	"strings"
 	"sync"
+
+	"github.com/dobyte/due-cli/internal/log"
 )
 
 type Package struct {
@@ -12,6 +13,11 @@ type Package struct {
 	Module  string
 	Version string
 }
+
+const (
+	installFailure = "install failure"
+	installSuccess = "install success"
+)
 
 // Install 安装包
 func Install(packages ...Package) {
@@ -22,9 +28,9 @@ func Install(packages ...Package) {
 	for _, item := range packages {
 		go func(p Package) {
 			if _, err := exec.Command("go", "install", fmt.Sprintf("%s@%s", p.Module, p.Version)).Output(); err != nil {
-				fmt.Printf("%s installed failed: %v\n", p.Name, strings.TrimSuffix(string(err.(*exec.ExitError).Stderr), "\n"))
+				log.Error(installFailure, err)
 			} else {
-				fmt.Printf("%s installed success\n", p.Name)
+				log.Info(installSuccess)
 			}
 
 			wg.Done()

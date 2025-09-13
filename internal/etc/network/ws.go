@@ -22,6 +22,8 @@ const WSServerTemplate = `
 	heartbeatInterval = "10s"
 	# 心跳机制，默认为resp响应式心跳。可选：resp 响应式心跳 | tick 定时主推心跳
 	heartbeatMechanism = "resp"
+	# 授权超时时间，（在客户端建立连接后，如果在授权超时时间内未进行绑定用户操作，则被认定为未授权连接，服务器会强制断开连接）支持单位：纳秒（ns）、微秒（us | µs）、毫秒（ms）、秒（s）、分（m）、小时（h）、天（d）。默认为0s，不进行授权检测
+	authorizeTimeout = "0s"
 `
 
 const WSClientTemplate = `
@@ -30,6 +32,6 @@ const WSClientTemplate = `
 	url = "ws://127.0.0.1:3553"
 	# 握手超时时间，支持单位：纳秒（ns）、微秒（us | µs）、毫秒（ms）、秒（s）、分（m）、小时（h）、天（d）。默认为10s
 	handshakeTimeout = "10s"
-	# 心跳间隔时间。设置为0则不启用心跳检测，支持单位：纳秒（ns）、微秒（us | µs）、毫秒（ms）、秒（s）、分（m）、小时（h）、天（d）。默认为10s
+	# 心跳间隔时间；设置为0则不启用心跳检测，支持单位：纳秒（ns）、微秒（us | µs）、毫秒（ms）、秒（s）、分（m）、小时（h）、天（d）。默认为10s
 	heartbeatInterval = "10s"
 `

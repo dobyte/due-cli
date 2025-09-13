@@ -12,8 +12,14 @@ const RedisTemplate = `
 	username = ""
 	# 密码
 	password = ""
+	# 私钥文件
+	keyFile = ""
+	# 证书文件
+	certFile = ""
+	# CA证书文件
+	caFile = ""
 	# 最大重试次数
 	maxRetries = 3
 	# key前缀
-	prefix = "due"
+	prefix = "due:locate"
 `
