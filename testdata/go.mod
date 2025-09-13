@@ -25,9 +25,6 @@ require (
 	github.com/smartwalle/alipay/v3 v3.2.23
 	github.com/smartwalle/ncrypto v1.0.4
 	github.com/wechatpay-apiv3/wechatpay-go v0.2.18
-	gitlab.xhsdyx.com/goserver/gobang v0.0.0-20250724082233-b039c03f0ae9
-	gitlab.xhsdyx.com/goserver/mahjong v0.0.0-20250910020620-754202fbc596
-	gitlab.xhsdyx.com/goserver/poker v0.0.0-20250516092223-bf70a3502708
 	golang.org/x/crypto v0.42.0
 	golang.org/x/sync v0.17.0
 	google.golang.org/api v0.222.0
