@@ -1,0 +1,11 @@
+[network.tcp.client]
+	# 拨号地址
+	addr = "127.0.0.1:3553"
+	# 拨号超时时间，支持单位：纳秒（ns）、微秒（us | µs）、毫秒（ms）、秒（s）、分（m）、小时（h）、天（d）。默认为5s
+	timeout = "5s"
+	# CA证书文件
+	caFile = ""
+	# 证书域名
+	serverName = ""
+	# 心跳间隔时间；设置为0则不启用心跳检测，支持单位：纳秒（ns）、微秒（us | µs）、毫秒（ms）、秒（s）、分（m）、小时（h）、天（d）。默认为10s
+	heartbeatInterval = "10s"

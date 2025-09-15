@@ -7,7 +7,6 @@ import (
 	"github.com/dobyte/due-cli/internal/flag"
 	"github.com/dobyte/due-cli/internal/gen"
 	"github.com/dobyte/due-cli/internal/os"
-	"github.com/dobyte/due-cli/internal/version"
 	"github.com/urfave/cli/v2"
 )
 
@@ -39,7 +38,7 @@ var Command = &cli.Command{
 				"VarLocator":     locator,
 				"VarRegistry":    registry,
 				"VarTransporter": transporter,
-				"VarGoVersion":   version.GoVersion,
+				// "VarGoVersion":   version.GoVersion,
 			}
 		)
 

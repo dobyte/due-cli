@@ -1,0 +1,5 @@
+[transport.grpc.client]
+	# CA证书文件
+	caFile = ""
+	# 证书域名
+	serverName = ""

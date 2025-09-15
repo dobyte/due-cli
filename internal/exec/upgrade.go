@@ -1,11 +1,7 @@
 package exec
 
 import (
-	"encoding/json"
-	"errors"
 	"fmt"
-	"io"
-	"net/http"
 	"os/exec"
 	"path/filepath"
 	"regexp"
@@ -13,6 +9,7 @@ import (
 
 	"github.com/dobyte/due-cli/internal/log"
 	"github.com/dobyte/due-cli/internal/os"
+	"github.com/dobyte/due-cli/internal/version"
 )
 
 const (
@@ -34,7 +31,7 @@ type tag struct {
 }
 
 // Upgrade 升级框架
-func Upgrade(dir string, version string) {
+func Upgrade(dir string, v string) {
 	if !os.IsDir(dir) {
 		log.Fatal(upgradeFailure, "the dir is not a directory")
 	}
@@ -50,7 +47,7 @@ func Upgrade(dir string, version string) {
 		log.Fatal(upgradeFailure, err)
 	}
 
-	major, full, sha, err := parseTag(version)
+	full, major, sha, err := version.ParseDueVersion(v)
 	if err != nil {
 		log.Fatal(upgradeFailure, err)
 	}
@@ -83,96 +80,4 @@ func Upgrade(dir string, version string) {
 	}
 
 	log.Info(upgradeSuccess)
-}
-
-// 解析标签
-func parseTag(v string) (string, string, string, error) {
-	tag, err := loadTag(v)
-	if err != nil {
-		return "", "", "", err
-	}
-
-	reg := regexp.MustCompile(`refs/tags/((v[0-9]+)\.[0-9]+\.[0-9]+)`)
-	rst := reg.FindStringSubmatch(tag.Ref)
-
-	if len(rst) != 3 {
-		return "", "", "", errors.New("invalid tag")
-	}
-
-	return rst[2], rst[1], tag.Object.Sha[:7], nil
-}
-
-// 加载标签
-func loadTag(v string) (*tag, error) {
-	switch v {
-	case "":
-		return nil, errors.New("the version is empty")
-	case "latest":
-		tags, err := fetchAllTags()
-		if err != nil {
-			return nil, err
-		}
-
-		return tags[len(tags)-1], nil
-	default:
-		return fetchTag(v)
-	}
-}
-
-// 拉取特定标签
-func fetchTag(v string) (*tag, error) {
-	url := dueFrameworkTagsUrl + "/" + v
-
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	res := &tag{}
-
-	if err = json.Unmarshal(body, res); err != nil {
-		return nil, err
-	}
-
-	if res.Status == "404" {
-		return nil, errors.New("the due version not found")
-	}
-
-	if res.Object.Sha == "" {
-		return nil, errors.New("the due version not found")
-	}
-
-	return res, nil
-}
-
-// 拉取所有标签
-func fetchAllTags() ([]*tag, error) {
-	resp, err := http.Get(dueFrameworkTagsUrl)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	tags := make([]*tag, 0)
-
-	if err = json.Unmarshal(body, &tags); err != nil {
-		return nil, err
-	}
-
-	if len(tags) == 0 {
-		return nil, errors.New("the due version not found")
-	}
-
-	return tags, nil
 }
