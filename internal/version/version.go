@@ -3,10 +3,15 @@ package version
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"os/exec"
+	"path/filepath"
 	"regexp"
+
+	"github.com/dobyte/due-cli/internal/mod/base"
+	"github.com/dobyte/due-cli/internal/os"
 )
 
 const dueFrameworkTagsUrl = "https://api.github.com/repos/dobyte/due/git/refs/tags"
@@ -55,6 +60,29 @@ func ParseDueVersion(v string) (string, string, string, error) {
 	}
 
 	return rst[1], rst[2], tag.Object.Sha[:7], nil
+}
+
+// 从go.mod文件中解析due框架版本
+func ParseDueVersionFromGoMod(dir string) (string, string, string, error) {
+	mod := filepath.Join(dir, "go.mod")
+
+	if !os.IsFile(mod) {
+		return "", "", "", errors.New("the go.mod file does not exist")
+	}
+
+	content, err := os.ReadFile(mod)
+	if err != nil {
+		return "", "", "", err
+	}
+
+	reg := regexp.MustCompile(fmt.Sprintf(`%s/v\d+ (v\d+\.\d+\.\d+)`, base.Package))
+	rst := reg.FindSubmatch(content)
+
+	if len(rst) != 2 {
+		return "", "", "", errors.New("invalid go.mod file")
+	}
+
+	return ParseDueVersion(string(rst[1]))
 }
 
 // 加载标签

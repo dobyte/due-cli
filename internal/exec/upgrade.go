@@ -8,27 +8,15 @@ import (
 	"time"
 
 	"github.com/dobyte/due-cli/internal/log"
+	"github.com/dobyte/due-cli/internal/mod/base"
 	"github.com/dobyte/due-cli/internal/os"
 	"github.com/dobyte/due-cli/internal/version"
-)
-
-const (
-	dueFrameworkPrefix  = "github.com/dobyte/due"
-	dueFrameworkTagsUrl = "https://api.github.com/repos/dobyte/due/git/refs/tags"
 )
 
 const (
 	upgradeFailure = "upgrade failure"
 	upgradeSuccess = "upgrade success"
 )
-
-type tag struct {
-	Status string `json:"status,omitempty"`
-	Ref    string `json:"ref,omitempty"`
-	Object struct {
-		Sha string `json:"sha,omitempty"`
-	} `json:"object,omitempty"`
-}
 
 // Upgrade 升级框架
 func Upgrade(dir string, v string) {
@@ -52,7 +40,7 @@ func Upgrade(dir string, v string) {
 		log.Fatal(upgradeFailure, err)
 	}
 
-	pkg := fmt.Sprintf("%s/%s@%s", dueFrameworkPrefix, major, full)
+	pkg := fmt.Sprintf("%s/%s@%s", base.Package, major, full)
 	cmd := exec.Command("go", "get", pkg)
 	cmd.Dir = dir
 	cmd.WaitDelay = 30 * time.Second
@@ -61,8 +49,8 @@ func Upgrade(dir string, v string) {
 		log.Fatal(upgradeFailure, err)
 	}
 
-	reg := regexp.MustCompile(fmt.Sprintf(`(%s/\w+/\w+)/v\d+`, dueFrameworkPrefix))
-	rst := reg.FindAllStringSubmatch(string(content), -1)
+	reg := regexp.MustCompile(fmt.Sprintf(`(%s/\w+/\w+)/v\d+`, base.Package))
+	rst := reg.FindAllSubmatch(content, -1)
 
 	for _, group := range rst {
 		if len(group) != 2 {

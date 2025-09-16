@@ -39,6 +39,11 @@ func NewCommands(dir string, version string, sha string) *Commands {
 	return c
 }
 
+// AddBase 添加主包
+func (c *Commands) AddBase() {
+	c.addPackage(base.Package, c.full)
+}
+
 // AddLocator 添加定位器
 func (c *Commands) AddLocator(name string) *Commands {
 	switch name {
@@ -142,17 +147,12 @@ func (c *Commands) Run() error {
 	c.addGoModTidy()
 
 	for _, cmd := range c.commands {
-		if err := cmd.Run(); err != nil {
+		if _, err := cmd.Output(); err != nil {
 			return err
 		}
 	}
 
 	return nil
-}
-
-// 添加主包
-func (c *Commands) addBasePackage() {
-	c.addPackage(base.Package, c.full)
 }
 
 // 添加子包

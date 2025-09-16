@@ -155,8 +155,18 @@ var Command = &cli.Command{
 			} else {
 				commands = mod.NewCommands(dir, full, sha)
 			}
-		} else {
 
+			commands.AddBase()
+		} else {
+			full, major, sha, err := vs.ParseDueVersionFromGoMod(dir)
+			if err != nil {
+				log.Fatal(createFailure, err)
+			}
+
+			variables.DueFullVersion = full
+			variables.DueMajorVersion = major
+
+			commands = mod.NewCommands(dir, full, sha)
 		}
 
 		etc := mod.NewEtc()
