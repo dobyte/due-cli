@@ -11,6 +11,7 @@ import (
 	"github.com/dobyte/due-cli/internal/mod"
 	"github.com/dobyte/due-cli/internal/mod/cluster"
 	"github.com/dobyte/due-cli/internal/os"
+	tpl "github.com/dobyte/due-cli/internal/template"
 	vs "github.com/dobyte/due-cli/internal/version"
 	"github.com/urfave/cli/v2"
 )
@@ -26,14 +27,13 @@ var Command = &cli.Command{
 	Action: func(ctx *cli.Context) error {
 		var (
 			dir       string
-			alone     bool
 			variables = &gen.Variables{}
 		)
 
 		if err := survey.AskOne(&survey.Confirm{
 			Message: "whether it is an alone project:",
 			Default: false,
-		}, &alone); err != nil {
+		}, &variables.Alone); err != nil {
 			log.Fatal(createFailure, err)
 		}
 
@@ -59,12 +59,12 @@ var Command = &cli.Command{
 			log.Fatal(createFailure, err)
 		}
 
-		isNeedGenMod := alone || !os.IsFile(filepath.Join(dir, "go.mod"))
+		isNeedGenMod := variables.Alone || !os.IsFile(filepath.Join(dir, "go.mod"))
 
 		if isNeedGenMod {
 			var defaultModule string
 
-			if alone {
+			if variables.Alone {
 				defaultModule = fmt.Sprintf("github.com/due/%s", variables.Name)
 			} else {
 				defaultModule = "github.com/due"
@@ -180,7 +180,7 @@ var Command = &cli.Command{
 			variables.DueFullVersion = full
 			variables.DueMajorVersion = major
 
-			if alone {
+			if variables.Alone {
 				commands = mod.NewCommands(filepath.Join(dir, variables.Name), full, sha)
 			} else {
 				commands = mod.NewCommands(dir, full, sha)
@@ -218,10 +218,26 @@ var Command = &cli.Command{
 			Tpl:       template.MainTemplate,
 			Variables: variables,
 		}, &gen.Makefile{
+			Out:       template.AppOutput,
+			Tpl:       template.AppTemplate,
+			Variables: variables,
+		}, &gen.Makefile{
 			Out:       etc.Output(),
 			Tpl:       etc.Template(),
 			Variables: variables,
 		})
+
+		if isNeedGenMod {
+			makefiles = append(makefiles, &gen.Makefile{
+				Out:       tpl.GoModOutput,
+				Tpl:       tpl.GoModTemplate,
+				Variables: variables,
+			}, &gen.Makefile{
+				Out:       tpl.GitignoreOutput,
+				Tpl:       tpl.GitignoreTemplate,
+				Variables: variables,
+			})
+		}
 
 		if err := gen.NewGenerator(filepath.Join(dir, variables.Name)).Make(makefiles...); err != nil {
 			log.Fatal(createFailure, err)

@@ -14,6 +14,7 @@ type Makefile struct {
 }
 
 type Variables struct {
+	Alone           bool   // 独立项目
 	Name            string // 名称
 	Lock            string // 分布式锁
 	Codec           string // 编码

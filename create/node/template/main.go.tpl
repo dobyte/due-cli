@@ -1,7 +1,11 @@
 package main
 
 import (
-	"game-server/hall/app"
+	{{- if .Alone }}
+    "{{.Module}}/app"
+    {{- else}}
+	"{{.Module}}/{{.Name}}/app"
+    {{- end}}
 
 	{{- if ne .Config "none"}}
 	cc "github.com/dobyte/due/config/{{.Config}}/{{.DueMajorVersion}}"
