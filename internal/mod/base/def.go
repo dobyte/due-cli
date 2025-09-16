@@ -4,6 +4,10 @@ import (
 	_ "embed"
 )
 
+const (
+	Package = "github.com/dobyte/due"
+)
+
 var (
 	//go:embed base.toml
 	BaseTemplate string

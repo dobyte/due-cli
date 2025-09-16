@@ -2,18 +2,15 @@ package gate
 
 import (
 	"fmt"
-	"os/exec"
 	"path/filepath"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/dobyte/due-cli/create/gate/template"
-	"github.com/dobyte/due-cli/internal/etc"
-	"github.com/dobyte/due-cli/internal/etc/cluster"
 	"github.com/dobyte/due-cli/internal/gen"
 	"github.com/dobyte/due-cli/internal/log"
+	"github.com/dobyte/due-cli/internal/mod"
+	"github.com/dobyte/due-cli/internal/mod/cluster"
 	"github.com/dobyte/due-cli/internal/os"
-	"github.com/dobyte/due-cli/internal/packages"
-	"github.com/dobyte/due-cli/internal/packages/locate"
 	tpl "github.com/dobyte/due-cli/internal/template"
 	vs "github.com/dobyte/due-cli/internal/version"
 	"github.com/urfave/cli/v2"
@@ -29,7 +26,6 @@ var Command = &cli.Command{
 	Usage: "create a new gate project",
 	Action: func(ctx *cli.Context) error {
 		var (
-			err        error
 			dir        string
 			name       string
 			alone      bool
@@ -41,42 +37,44 @@ var Command = &cli.Command{
 			registry   string
 		)
 
-		if err = survey.AskOne(&survey.Input{
+		if err := survey.AskOne(&survey.Input{
 			Message: "specify the project directory:",
 			Default: "./testdata",
 		}, &dir); err != nil {
 			log.Fatal(createFailure, err)
 		}
 
-		if err = survey.AskOne(&survey.Input{
+		if err := survey.AskOne(&survey.Input{
 			Message: "specify the project name:",
 			Default: "gate",
 		}, &name); err != nil {
 			log.Fatal(createFailure, err)
 		}
 
-		if err = survey.AskOne(&survey.Confirm{
+		if err := survey.AskOne(&survey.Confirm{
 			Message: "whether it is an alone project:",
 			Default: false,
 		}, &alone); err != nil {
 			log.Fatal(createFailure, err)
 		}
 
-		if alone {
-			if err = survey.AskOne(&survey.Input{
+		isNeedGenMod := alone || !os.IsFile(filepath.Join(dir, "go.mod"))
+
+		if isNeedGenMod {
+			if err := survey.AskOne(&survey.Input{
 				Message: "specify the project module:",
 				Default: fmt.Sprintf("github.com/due/%s", name),
 			}, &module); err != nil {
 				log.Fatal(createFailure, err)
 			}
 
-			if err = survey.AskOne(&survey.Input{
+			if err := survey.AskOne(&survey.Input{
 				Message: "specify the go version:",
 			}, &goVersion); err != nil {
 				log.Fatal(createFailure, err)
 			}
 
-			if err = survey.AskOne(&survey.Input{
+			if err := survey.AskOne(&survey.Input{
 				Message: "specify the due version:",
 				Default: "latest",
 			}, &dueVersion); err != nil {
@@ -84,7 +82,7 @@ var Command = &cli.Command{
 			}
 		}
 
-		if err = survey.AskOne(&survey.Select{
+		if err := survey.AskOne(&survey.Select{
 			Message: "choose a network component:",
 			Options: []string{"ws", "tcp"},
 			Default: "ws",
@@ -92,7 +90,7 @@ var Command = &cli.Command{
 			log.Fatal(createFailure, err)
 		}
 
-		if err = survey.AskOne(&survey.Select{
+		if err := survey.AskOne(&survey.Select{
 			Message: "choose a locator component:",
 			Options: []string{"redis"},
 			Default: "redis",
@@ -100,7 +98,7 @@ var Command = &cli.Command{
 			log.Fatal(createFailure, err)
 		}
 
-		if err = survey.AskOne(&survey.Select{
+		if err := survey.AskOne(&survey.Select{
 			Message: "choose a registry component:",
 			Options: []string{"nacos", "etcd", "consul"},
 			Default: "nacos",
@@ -108,33 +106,34 @@ var Command = &cli.Command{
 			log.Fatal(createFailure, err)
 		}
 
-		dir = filepath.Join(dir, name)
-
-		if ok, err := os.IsEmptyDir(dir); err != nil {
+		if ok, err := os.IsEmptyDir(filepath.Join(dir, name)); err != nil {
 			log.Fatal(createFailure, err)
 		} else if !ok {
 			log.Fatal(createFailure, "the project dir is not empty.")
 		}
 
-		variables := &gen.Variables{
-			Name:      name,
-			Module:    module,
-			Network:   network,
-			Locator:   locator,
-			Registry:  registry,
-			GoVersion: goVersion,
-		}
+		var (
+			commands  *mod.Commands
+			variables = &gen.Variables{
+				Name:      name,
+				Module:    module,
+				Network:   network,
+				Locator:   locator,
+				Registry:  registry,
+				GoVersion: goVersion,
+			}
+		)
 
-		commands := make([]*exec.Cmd, 0, 3)
-
-		if alone {
+		if isNeedGenMod {
 			if module == "" {
 				log.Fatal(createFailure, "the module of the project is required.")
 			}
 
 			if goVersion == "" {
-				if goVersion, err = vs.ParseGoVersion(); err != nil {
+				if v, err := vs.ParseGoVersion(); err != nil {
 					log.Fatal(createFailure, err)
+				} else {
+					goVersion = v
 				}
 			}
 
@@ -151,10 +150,16 @@ var Command = &cli.Command{
 			variables.DueFullVersion = full
 			variables.DueMajorVersion = major
 
-			commands = append(commands, packages.CMD(locate.Redis, major, sha, dir))
+			if alone {
+				commands = mod.NewCommands(filepath.Join(dir, name), full, sha)
+			} else {
+				commands = mod.NewCommands(dir, full, sha)
+			}
+		} else {
+
 		}
 
-		etc := etc.NewEtc()
+		etc := mod.NewEtc()
 		etc.AddLog()
 		etc.AddPacket()
 		etc.AddCluster(cluster.Gate)
@@ -173,7 +178,7 @@ var Command = &cli.Command{
 			Variables: variables,
 		})
 
-		if alone {
+		if isNeedGenMod {
 			makefiles = append(makefiles, &gen.Makefile{
 				Out:       tpl.GoModOutput,
 				Tpl:       tpl.GoModTemplate,
@@ -183,20 +188,18 @@ var Command = &cli.Command{
 				Tpl:       tpl.GitignoreTemplate,
 				Variables: variables,
 			})
-		} else {
-			// if err := gen.MakeGlobalFile(replaces); err != nil {
-			// 	return cli.Exit(err, 1)
-			// }
 		}
 
-		if err = gen.NewGenerator(dir).Make(makefiles...); err != nil {
+		if err := gen.NewGenerator(filepath.Join(dir, name)).Make(makefiles...); err != nil {
 			log.Fatal(createFailure, err)
 		}
 
-		for _, command := range commands {
-			if err = command.Run(); err != nil {
-				log.Fatal(createFailure, err)
-			}
+		commands.AddLock(locator)
+		commands.AddRegistry(registry)
+		commands.AddNetwork(network)
+
+		if err := commands.Run(); err != nil {
+			log.Fatal(createFailure, err)
 		}
 
 		log.Info(createSuccess)

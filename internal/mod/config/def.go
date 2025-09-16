@@ -11,6 +11,12 @@ const (
 	Nacos  = "nacos"
 )
 
+const (
+	EtcdPackage   = "github.com/dobyte/due/config/etcd"
+	NacosPackage  = "github.com/dobyte/due/config/nacos"
+	ConsulPackage = "github.com/dobyte/due/config/consul"
+)
+
 var (
 	//go:embed file.toml
 	FileTemplate string

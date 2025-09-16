@@ -9,6 +9,11 @@ const (
 	RPCX = "rpcx"
 )
 
+const (
+	GRPCPackage = "github.com/dobyte/due/transport/grpc"
+	RPCXPackage = "github.com/dobyte/due/transport/rpcx"
+)
+
 var (
 	//go:embed grpc_client.toml
 	GRPCClientTemplate string

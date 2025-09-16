@@ -9,6 +9,11 @@ const (
 	Memcache = "memcache"
 )
 
+const (
+	RedisPackage    = "github.com/dobyte/due/lock/redis"
+	MemcachePackage = "github.com/dobyte/due/lock/memcache"
+)
+
 var (
 	//go:embed redis.toml
 	RedisTemplate string
