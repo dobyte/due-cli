@@ -4,7 +4,7 @@ import (
     {{- if eq .Network "ws"}}
     "net/http"
     {{- end}}
-	"github.com/dobyte/due/locate/{{.Locator}}/{{.DueMajorVersion}}"
+	"github.com/dobyte/due/locate/{{.Locate}}/{{.DueMajorVersion}}"
 	"github.com/dobyte/due/network/{{.Network}}/{{.DueMajorVersion}}"
 	"github.com/dobyte/due/registry/{{.Registry}}/{{.DueMajorVersion}}"
 	"github.com/dobyte/due/{{.DueMajorVersion}}"
@@ -23,7 +23,7 @@ func main() {
     })
     {{- end}}
 	// 创建用户定位器
-	locator := {{.Locator}}.NewLocator()
+	locator := {{.Locate}}.NewLocator()
 	// 创建服务注册发现
 	registry := {{.Registry}}.NewRegistry()
 	// 创建网关组件

@@ -15,11 +15,16 @@ type Makefile struct {
 
 type Variables struct {
 	Name            string // 名称
+	Lock            string // 分布式锁
 	Codec           string // 编码
+	Cache           string // 缓存
 	Module          string // 模块
+	Locate          string // 定位器
+	Config          string // 配置中心
 	Network         string // 网络
-	Locator         string // 定位器
 	Registry        string // 注册中心
+	Transport       string // 传输层
+	Eventbus        string // 事件总线
 	GoVersion       string // go版本
 	DueFullVersion  string // due版本
 	DueMajorVersion string // due主版本

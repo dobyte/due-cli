@@ -8,11 +8,12 @@ import (
 	"github.com/dobyte/due-cli/internal/mod/cluster"
 	"github.com/dobyte/due-cli/internal/mod/component"
 	"github.com/dobyte/due-cli/internal/mod/config"
-	"github.com/dobyte/due-cli/internal/mod/locator"
+	"github.com/dobyte/due-cli/internal/mod/eventbus"
+	"github.com/dobyte/due-cli/internal/mod/locate"
 	"github.com/dobyte/due-cli/internal/mod/lock"
 	"github.com/dobyte/due-cli/internal/mod/network"
 	"github.com/dobyte/due-cli/internal/mod/registry"
-	"github.com/dobyte/due-cli/internal/mod/transporter"
+	"github.com/dobyte/due-cli/internal/mod/transport"
 )
 
 type Etc struct {
@@ -56,11 +57,11 @@ func (e *Etc) AddPacket() *Etc {
 	return e
 }
 
-// AddLocator 添加定位器配置
-func (e *Etc) AddLocator(name string) *Etc {
+// AddLocate 添加定位组件配置
+func (e *Etc) AddLocate(name string) *Etc {
 	switch name {
-	case locator.Redis:
-		e.templates = append(e.templates, locator.RedisTemplate)
+	case locate.Redis:
+		e.templates = append(e.templates, locate.RedisTemplate)
 	default:
 		// ignore
 	}
@@ -151,10 +152,10 @@ func (e *Etc) AddLock(name string) *Etc {
 // AddTransportServer 添加传输服务器配置
 func (e *Etc) AddTransportServer(name string) *Etc {
 	switch name {
-	case transporter.RPCX:
-		e.templates = append(e.templates, transporter.RPCXServerTemplate)
-	case transporter.GRPC:
-		e.templates = append(e.templates, transporter.GRPCServerTemplate)
+	case transport.RPCX:
+		e.templates = append(e.templates, transport.RPCXServerTemplate)
+	case transport.GRPC:
+		e.templates = append(e.templates, transport.GRPCServerTemplate)
 	default:
 		// ignore
 	}
@@ -165,10 +166,10 @@ func (e *Etc) AddTransportServer(name string) *Etc {
 // AddTransportClient 添加传输客户端配置
 func (e *Etc) AddTransportClient(name string) *Etc {
 	switch name {
-	case transporter.RPCX:
-		e.templates = append(e.templates, transporter.RPCXClientTemplate)
-	case transporter.GRPC:
-		e.templates = append(e.templates, transporter.GRPCClientTemplate)
+	case transport.RPCX:
+		e.templates = append(e.templates, transport.RPCXClientTemplate)
+	case transport.GRPC:
+		e.templates = append(e.templates, transport.GRPCClientTemplate)
 	default:
 		// ignore
 	}
@@ -197,6 +198,22 @@ func (e *Etc) AddNetworkClient(name string) *Etc {
 		e.templates = append(e.templates, network.WSClientTemplate)
 	case network.TCP:
 		e.templates = append(e.templates, network.TCPClientTemplate)
+	default:
+		// ignore
+	}
+
+	return e
+}
+
+// AddEventbus 添加事件总线配置
+func (e *Etc) AddEventbus(name string) *Etc {
+	switch name {
+	case eventbus.Nats:
+		e.templates = append(e.templates, eventbus.NatsTemplate)
+	case eventbus.Redis:
+		e.templates = append(e.templates, eventbus.RedisTemplate)
+	case eventbus.Kafka:
+		e.templates = append(e.templates, eventbus.KafkaTemplate)
 	default:
 		// ignore
 	}

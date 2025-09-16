@@ -1,4 +1,4 @@
-package transporter
+package transport
 
 import (
 	_ "embed"

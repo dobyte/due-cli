@@ -1,4 +1,4 @@
-package locator
+package locate
 
 import (
 	_ "embed"

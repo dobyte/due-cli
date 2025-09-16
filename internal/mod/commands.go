@@ -7,13 +7,15 @@ import (
 	"time"
 
 	"github.com/dobyte/due-cli/internal/mod/base"
+	"github.com/dobyte/due-cli/internal/mod/cache"
 	"github.com/dobyte/due-cli/internal/mod/component"
 	"github.com/dobyte/due-cli/internal/mod/config"
-	"github.com/dobyte/due-cli/internal/mod/locator"
+	"github.com/dobyte/due-cli/internal/mod/eventbus"
+	"github.com/dobyte/due-cli/internal/mod/locate"
 	"github.com/dobyte/due-cli/internal/mod/lock"
 	"github.com/dobyte/due-cli/internal/mod/network"
 	"github.com/dobyte/due-cli/internal/mod/registry"
-	"github.com/dobyte/due-cli/internal/mod/transporter"
+	"github.com/dobyte/due-cli/internal/mod/transport"
 )
 
 const defaultWaitDelay = 30 * time.Second
@@ -44,11 +46,11 @@ func (c *Commands) AddBase() {
 	c.addPackage(base.Package, c.full)
 }
 
-// AddLocator 添加定位器
-func (c *Commands) AddLocator(name string) *Commands {
+// AddLocate 添加定位组件
+func (c *Commands) AddLocate(name string) *Commands {
 	switch name {
-	case locator.Redis:
-		c.addSubPackage(locator.RedisPackage)
+	case locate.Redis:
+		c.addSubPackage(locate.RedisPackage)
 	default:
 		// ignore
 	}
@@ -72,13 +74,13 @@ func (c *Commands) AddRegistry(name string) *Commands {
 	return c
 }
 
-// AddTransporter 添加 transporter
-func (c *Commands) AddTransporter(name string) *Commands {
+// AddTransport 添加RPC传输组件
+func (c *Commands) AddTransport(name string) *Commands {
 	switch name {
-	case transporter.GRPC:
-		c.addSubPackage(transporter.GRPCPackage)
-	case transporter.RPCX:
-		c.addSubPackage(transporter.RPCXPackage)
+	case transport.GRPC:
+		c.addSubPackage(transport.GRPCPackage)
+	case transport.RPCX:
+		c.addSubPackage(transport.RPCXPackage)
 	default:
 		// ignore
 	}
@@ -123,6 +125,36 @@ func (c *Commands) AddConfig(name string) *Commands {
 		c.addSubPackage(config.NacosPackage)
 	case config.Consul:
 		c.addSubPackage(config.ConsulPackage)
+	default:
+		// ignore
+	}
+
+	return c
+}
+
+// AddCache 添加缓存
+func (c *Commands) AddCache(name string) *Commands {
+	switch name {
+	case cache.Redis:
+		c.addSubPackage(cache.RedisPackage)
+	case cache.Memcache:
+		c.addSubPackage(cache.MemcachePackage)
+	default:
+		// ignore
+	}
+
+	return c
+}
+
+// AddEventbus 添加事件总线
+func (c *Commands) AddEventbus(name string) *Commands {
+	switch name {
+	case eventbus.Redis:
+		c.addSubPackage(eventbus.RedisPackage)
+	case eventbus.Nats:
+		c.addSubPackage(eventbus.NatsPackage)
+	case eventbus.Kafka:
+		c.addSubPackage(eventbus.KafkaPackage)
 	default:
 		// ignore
 	}

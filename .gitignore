@@ -4,3 +4,6 @@ go.work.sum
 
 # goland idea
 .idea/
+
+# testdata
+testdata/
